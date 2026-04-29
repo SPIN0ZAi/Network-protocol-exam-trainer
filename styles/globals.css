@@ -1,0 +1,14 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+  background: #f7f9fc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: #2f6fdb;
+}
