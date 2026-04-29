@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio Interactivo de Redes TCP/IP - Aprendizaje Guiado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .scenario-section {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+        }
+
+        .scenario-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .scenario-text {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .reference-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .reference-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .reference-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .reference-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .topology-section {
+            background: #f8f9fa;
+            border-left: 4px solid #764ba2;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+        }
+
+        .topology-section h3 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .topology-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .topology-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .exercise-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .exercise-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .exercise-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+
+        .exercise-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .row-number {
+            background: #f0f0f0;
+            font-weight: 600;
+            color: #667eea;
+            width: 50px;
+            text-align: center;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9em;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:hover {
+            border-color: #667eea;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        select.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        select.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-check {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-check:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+
+        .feedback-section {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feedback-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .feedback-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 4px;
+            border-left: 4px solid #ccc;
+        }
+
+        .feedback-item.correct {
+            border-left-color: #28a745;
+            background: #f0f8f5;
+        }
+
+        .feedback-item.incorrect {
+            border-left-color: #dc3545;
+            background: #fdf8f7;
+        }
+
+        .feedback-row {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .feedback-explanation {
+            color: #555;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+            color: #667eea;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .encouragement {
+            text-align: center;
+            color: #764ba2;
+            font-style: italic;
+            margin-top: 20px;
+        }
+
+        .learning-section {
+            background: linear-gradient(135deg, #f6f8ff 0%, #eef3ff 100%);
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+        }
+
+        .learning-section h2 {
+            color: #2f6fdb;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .learning-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .learning-tab {
+            background: white;
+            border: 2px solid #c7d4ff;
+            color: #3559c7;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .learning-tab.active {
+            background: #3559c7;
+            color: white;
+            border-color: #3559c7;
+        }
+
+        .learning-panel {
+            background: white;
+            border: 1px solid #dde6ff;
+            border-radius: 8px;
+            padding: 18px;
+            margin-top: 10px;
+            box-shadow: 0 2px 10px rgba(53, 89, 199, 0.08);
+        }
+
+        .learning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .learning-card {
+            background: white;
+            border: 1px solid #e6ebff;
+            border-radius: 8px;
+            padding: 14px;
+            min-height: 140px;
+        }
+
+        .learning-card h4 {
+            color: #3559c7;
+            margin-bottom: 8px;
+        }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: #eef3ff;
+            color: #3559c7;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .mini-rules {
+            background: #f8fff8;
+            border: 1px solid #cfead1;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .scenario-tools {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .scenario-tools button {
+            background: #3559c7;
+            color: white;
+        }
+
+        .progress-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .progress-stat {
+            background: white;
+            border: 1px solid #dbe4ff;
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(53, 89, 199, 0.06);
+        }
+
+        .progress-stat strong {
+            display: block;
+            font-size: 1.4em;
+            color: #3559c7;
+            margin-bottom: 4px;
+        }
+
+        .quiz-box {
+            background: white;
+            border: 1px solid #dbe4ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 18px;
+            box-shadow: 0 2px 8px rgba(53, 89, 199, 0.06);
+        }
+
+        .quiz-box h3 {
+            color: #3559c7;
+            margin-bottom: 8px;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+            margin: 14px 0;
+        }
+
+        .quiz-option {
+            border: 2px solid #dbe4ff;
+            background: #f8fbff;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #3559c7;
+            transform: translateY(-1px);
+        }
+
+        .quiz-option.selected {
+            border-color: #3559c7;
+            background: #eef3ff;
+        }
+
+        .quiz-result {
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .quiz-result.correct {
+            color: #1e7e34;
+        }
+
+        .quiz-result.incorrect {
+            color: #c82333;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                padding: 20px;
+            }
+
+            .exercise-table td {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+
+            select {
+                font-size: 0.85em;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Ejercicio Interactivo de Redes TCP/IP</h1>
+        <p class="subtitle">Selecciona un escenario y completa la secuencia de tramas de red</p>
+
+        <div class="learning-section">
+            <h2>🧠 Aprende por capas</h2>
+            <p>Empieza pequeño: primero ARP, luego añade DNS, después DHCP y finalmente la comunicación completa con servidor.</p>
+            <div class="learning-tabs">
+                <button class="learning-tab active" onclick="showLearningStage('arp')">1. ARP solo</button>
+                <button class="learning-tab" onclick="showLearningStage('arp-dns')">2. ARP + DNS</button>
+                <button class="learning-tab" onclick="showLearningStage('arp-dns-dhcp')">3. ARP + DNS + DHCP</button>
+                <button class="learning-tab" onclick="showLearningStage('full')">4. ARP + DNS + DHCP + servidor</button>
+            </div>
+            <div id="learningPanel" class="learning-panel"></div>
+            <div class="learning-grid">
+                <div class="learning-card">
+                    <h4>ARP</h4>
+                    <p>Se usa cuando PC1 necesita la MAC del siguiente salto local. Si el destino está fuera de la red, se pregunta por el gateway.</p>
+                    <div class="tag-row"><span class="tag">IP → MAC</span><span class="tag">Capa 2</span><span class="tag">Broadcast</span></div>
+                </div>
+                <div class="learning-card">
+                    <h4>DNS</h4>
+                    <p>Solo aparece si hace falta traducir un nombre a IP. Si ya conoces la IP, o está guardada, DNS no sale.</p>
+                    <div class="tag-row"><span class="tag">Nombre → IP</span><span class="tag">Caché</span><span class="tag">Query</span></div>
+                </div>
+                <div class="learning-card">
+                    <h4>DHCP</h4>
+                    <p>Aparece cuando el equipo todavía no tiene IP, máscara, gateway o DNS. Entonces pide configuración antes de hablar con nadie.</p>
+                    <div class="tag-row"><span class="tag">Discover</span><span class="tag">Offer</span><span class="tag">Request</span><span class="tag">Ack</span></div>
+                </div>
+                <div class="learning-card">
+                    <h4>Servidor</h4>
+                    <p>Después de resolver todo, viene TCP: SYN, SYN+ACK, ACK, HTTP y cierre FIN/ACK. Si el servidor está fuera, el MAC destino será el gateway.</p>
+                    <div class="tag-row"><span class="tag">TCP</span><span class="tag">HTTP</span><span class="tag">Gateway</span></div>
+                </div>
+            </div>
+            <div class="mini-rules">
+                <strong>Regla rápida:</strong> ARP se usa para llegar al siguiente salto; DNS solo si el nombre necesita resolución; DHCP solo si no hay configuración IP; el servidor entra después de conectar por TCP.
+            </div>
+            <div class="progress-box" id="progressSummary"></div>
+            <div class="quiz-box" id="arpQuizBox">
+                <h3>🎯 Mini quiz: ¿cuándo llamo a ARP?</h3>
+                <p>Elige la mejor respuesta para una situación básica.</p>
+                <div class="quiz-options" id="arpQuizOptions"></div>
+                <div class="scenario-tools">
+                    <button onclick="checkArpQuiz()">Comprobar</button>
+                    <button onclick="resetArpQuiz()">Limpiar</button>
+                </div>
+                <div id="arpQuizResult" class="quiz-result"></div>
+            </div>
+        </div>
+
+        <div class="scenario-section">
+            <h2>📌 Selecciona un Escenario</h2>
+            <div style="margin: 20px 0;">
+                <select id="scenarioSelector" onchange="changeScenario()" style="width: 100%; padding: 12px; font-size: 1em; border: 2px solid #667eea; border-radius: 4px; background: white; cursor: pointer;">
+                    <option value="">-- Elige un escenario --</option>
+                </select>
+            </div>
+            <div class="scenario-tools">
+                <button onclick="focusStage('arp')">Practicar ARP</button>
+                <button onclick="focusStage('arp-dns')">Practicar ARP + DNS</button>
+                <button onclick="focusStage('arp-dns-dhcp')">Practicar DHCP</button>
+                <button onclick="focusStage('full')">Practicar completo</button>
+            </div>
+        </div>
+
+        <div id="mainContent" class="hidden" style="opacity: 0; transition: opacity 0.3s;">
+            <div class="scenario-section">
+            <h2>📋 Escenario</h2>
+            <div id="scenarioDescription" class="scenario-text"></div>
+            <table class="reference-table">
+                <thead>
+                    <tr>
+                        <th>Dispositivo</th>
+                        <th>Dirección IP</th>
+                        <th>Dirección MAC</th>
+                    </tr>
+                </thead>
+                <tbody id="referenceTableBody">
+                </tbody>
+            </table>
+
+            <div class="topology-section">
+                <h3>🌍 Topología de Red</h3>
+                <div class="topology-container" id="topologyContainer">
+                </div>
+            </div>
+        </div>
+
+        <div class="exercise-section">
+            <h2>📊 Tabla de Tramas de Red</h2>
+            <table class="exercise-table">
+                <thead>
+                    <tr>
+                        <th>Trama</th>
+                        <th>Dir MAC Origen</th>
+                        <th>Dir MAC Destino</th>
+                        <th>Tipo de Paquete</th>
+                        <th>Dir IP Origen</th>
+                        <th>Dir IP Destino</th>
+                    </tr>
+                </thead>
+                <tbody id="exerciseTableBody">
+                </tbody>
+            </table>
+
+            <div class="button-group">
+                <button class="btn-check" onclick="checkAnswers()">✓ Corregir Ejercicio</button>
+                <button class="btn-reset" onclick="resetExercise()">🔄 Reiniciar</button>
+            </div>
+        </div>
+
+        <div id="feedbackSection" class="feedback-section hidden">
+            <h3>📝 Retroalimentación</h3>
+            <div id="feedbackContent"></div>
+        </div>
+
+            <p class="encouragement">💪 ¡Recuerda! Piensa en qué información necesita cada dispositivo para comunicarse.</p>
+        </div>
+    </div>
+
+    <script>
+        // Todos los escenarios predefinidos con sus respuestas correctas
+        const scenarios = [
+            {
+                name: "Escenario 1: DNS remoto, Web remoto, ARP vacío",
+                pc1Ip: '145.64.106.45',
+                pc1Mac: '11:11:11:11:11:11',
+                subnetMask: '255.255.248.0',
+                gatewayIp: '145.64.104.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '111.25.40.10',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '145.64.105.3',
+                webServerMac: '22:22:22:22:22:22',
+                targetUrl: 'www.servidor.org',
+                description: 'PC1 no ha realizado ninguna acción, todas las cachés están vacías. El servidor DNS es remoto (111.25.40.10) y el servidor web está en la red local (145.64.105.3).',
+                correctAnswers: [
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'ARP request solicitando la MAC de 145.64.104.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'ARP reply con la MAC de 145.64.104.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Petición de DNS', ipOrigen: '145.64.106.45', ipDestino: '111.25.40.10' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'Respuesta de DNS', ipOrigen: '111.25.40.10', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'ARP request solicitando la MAC de 145.64.105.3', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '22:22:22:22:22:22', macDestino: '11:11:11:11:11:11', tipoPaquete: 'ARP reply con la MAC de 145.64.105.3', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: '22:22:22:22:22:22', tipoPaquete: 'TCP [SYN]', ipOrigen: '145.64.106.45', ipDestino: '145.64.105.3' },
+                    { macOrigen: '22:22:22:22:22:22', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [SYN]+[ACK]', ipOrigen: '145.64.105.3', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: '22:22:22:22:22:22', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.105.3' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: '22:22:22:22:22:22', tipoPaquete: 'Peteción HTTP', ipOrigen: '145.64.106.45', ipDestino: '145.64.105.3' },
+                    { macOrigen: '22:22:22:22:22:22', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.105.3', ipDestino: '145.64.106.45' },
+                    { macOrigen: '22:22:22:22:22:22', macDestino: '11:11:11:11:11:11', tipoPaquete: 'Respuesta HTTP', ipOrigen: '145.64.105.3', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: '22:22:22:22:22:22', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.105.3' },
+                    { macOrigen: '22:22:22:22:22:22', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [FIN]', ipOrigen: '145.64.105.3', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: '22:22:22:22:22:22', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.105.3' },
+                    { macOrigen: '22:22:22:22:22:22', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.105.3', ipDestino: '145.64.106.45' }
+                ]
+            },
+            {
+                name: "Escenario 2: DNS local, Web remoto, ARP vacío",
+                pc1Ip: '145.64.106.45',
+                pc1Mac: '11:11:11:11:11:11',
+                subnetMask: '255.255.248.0',
+                gatewayIp: '145.64.104.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '145.64.106.10',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '145.64.112.59',
+                webServerMac: '22:22:22:22:22:22',
+                targetUrl: 'www.servidor.org',
+                description: 'PC1 no ha realizado ninguna acción, todas las cachés están vacías. El servidor DNS es local (145.64.106.10) y el servidor web está fuera de la red local (145.64.112.59).',
+                correctAnswers: [
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'ARP request solicitando la MAC de 145.64.106.10', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '33:33:33:33:33:33', macDestino: '11:11:11:11:11:11', tipoPaquete: 'ARP reply con la MAC de 145.64.106.10', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: '33:33:33:33:33:33', tipoPaquete: 'Petición de DNS', ipOrigen: '145.64.106.45', ipDestino: '145.64.106.10' },
+                    { macOrigen: '33:33:33:33:33:33', macDestino: '11:11:11:11:11:11', tipoPaquete: 'Respuesta de DNS', ipOrigen: '145.64.106.10', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'ARP request solicitando la MAC de 145.64.104.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'ARP reply con la MAC de 145.64.104.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [SYN]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [SYN]+[ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Peteción HTTP', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'Respuesta HTTP', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [FIN]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' }
+                ]
+            },
+            {
+                name: "Escenario 3: DNS y Gateway en caché",
+                pc1Ip: '145.64.106.45',
+                pc1Mac: '11:11:11:11:11:11',
+                subnetMask: '255.255.248.0',
+                gatewayIp: '145.64.104.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '145.64.106.10',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '145.64.112.59',
+                webServerMac: '22:22:22:22:22:22',
+                targetUrl: 'www.servidor.org',
+                description: 'PC1 ya ha realizado una petición sobre www.servidor.org y conoce su IP. PC1 se ha comunicado con el exterior. La caché ARP contiene: DNS (33:33:33:33:33:33), Gateway (AA:AA:AA:AA:AA:AA), y otras direcciones.',
+                correctAnswers: [
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [SYN]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [SYN]+[ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Peteción HTTP', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'Respuesta HTTP', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' }
+                ]
+            },
+            {
+                name: "Escenario 4: DNS remoto, Web remoto, Gateway en caché",
+                pc1Ip: '93.170.23.5',
+                pc1Mac: '99:99:99:99:99:99',
+                subnetMask: '255.248.0.0',
+                gatewayIp: '93.168.0.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '8.8.8.8',
+                dnsServerMac: '88:88:88:88:88:88',
+                webServerIp: '161.67.140.25',
+                webServerMac: 'CC:CC:CC:CC:CC:CC',
+                targetUrl: 'www.elpais.es',
+                description: 'PC1 no ha realizado ninguna petición de DNS. PC1 no se ha comunicado con el exterior. La caché ARP contiene el Gateway (AA:AA:AA:AA:AA:AA) pero falta la MAC del DNS remoto.',
+                correctAnswers: [
+                    { macOrigen: '99:99:99:99:99:99', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'ARP request solicitando la MAC de 93.168.0.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '99:99:99:99:99:99', tipoPaquete: 'ARP reply con la MAC de 93.168.0.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '99:99:99:99:99:99', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Petición de DNS', ipOrigen: '93.170.23.5', ipDestino: '8.8.8.8' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '99:99:99:99:99:99', tipoPaquete: 'Respuesta de DNS', ipOrigen: '8.8.8.8', ipDestino: '93.170.23.5' },
+                    { macOrigen: '99:99:99:99:99:99', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [SYN]', ipOrigen: '93.170.23.5', ipDestino: '161.67.140.25' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '99:99:99:99:99:99', tipoPaquete: 'TCP [SYN]+[ACK]', ipOrigen: '161.67.140.25', ipDestino: '93.170.23.5' },
+                    { macOrigen: '99:99:99:99:99:99', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '93.170.23.5', ipDestino: '161.67.140.25' },
+                    { macOrigen: '99:99:99:99:99:99', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Peteción HTTP', ipOrigen: '93.170.23.5', ipDestino: '161.67.140.25' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '99:99:99:99:99:99', tipoPaquete: 'TCP [ACK]', ipOrigen: '161.67.140.25', ipDestino: '93.170.23.5' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '99:99:99:99:99:99', tipoPaquete: 'Respuesta HTTP', ipOrigen: '161.67.140.25', ipDestino: '93.170.23.5' },
+                    { macOrigen: '99:99:99:99:99:99', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '93.170.23.5', ipDestino: '161.67.140.25' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '99:99:99:99:99:99', tipoPaquete: 'TCP [FIN]', ipOrigen: '161.67.140.25', ipDestino: '93.170.23.5' },
+                    { macOrigen: '99:99:99:99:99:99', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '93.170.23.5', ipDestino: '161.67.140.25' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '99:99:99:99:99:99', tipoPaquete: 'TCP [ACK]', ipOrigen: '161.67.140.25', ipDestino: '93.170.23.5' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' }
+                ]
+            },
+            {
+                name: "Escenario 5: DNS remoto, Web remoto, Gateway en caché (II)",
+                pc1Ip: '116.12.203.43',
+                pc1Mac: '77:77:77:77:77:77',
+                subnetMask: '255.255.248.0',
+                gatewayIp: '116.12.200.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '8.8.8.8',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '161.67.136.11',
+                webServerMac: 'DD:DD:DD:DD:DD:DD',
+                targetUrl: 'www.esiiab.es',
+                description: 'PC1 no ha realizado ninguna petición de DNS. PC1 no se ha comunicado con el exterior. La caché ARP contiene otra dirección pero falta el Gateway.',
+                correctAnswers: [
+                    { macOrigen: '77:77:77:77:77:77', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'ARP request solicitando la MAC de 116.12.200.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '77:77:77:77:77:77', tipoPaquete: 'ARP reply con la MAC de 116.12.200.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '77:77:77:77:77:77', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Respuesta de DNS', ipOrigen: '116.12.203.43', ipDestino: '8.8.8.8' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '77:77:77:77:77:77', tipoPaquete: 'Respuesta de DNS', ipOrigen: '8.8.8.8', ipDestino: '116.12.203.43' },
+                    { macOrigen: '77:77:77:77:77:77', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [SYN]', ipOrigen: '116.12.203.43', ipDestino: '161.67.136.11' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '77:77:77:77:77:77', tipoPaquete: 'TCP [SYN]+[ACK]', ipOrigen: '161.67.136.11', ipDestino: '116.12.203.43' },
+                    { macOrigen: '77:77:77:77:77:77', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '116.12.203.43', ipDestino: '161.67.136.11' },
+                    { macOrigen: '77:77:77:77:77:77', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Peteción HTTP', ipOrigen: '116.12.203.43', ipDestino: '161.67.136.11' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '77:77:77:77:77:77', tipoPaquete: 'TCP [ACK]', ipOrigen: '161.67.136.11', ipDestino: '116.12.203.43' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '77:77:77:77:77:77', tipoPaquete: 'Respuesta HTTP', ipOrigen: '161.67.136.11', ipDestino: '116.12.203.43' },
+                    { macOrigen: '77:77:77:77:77:77', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '116.12.203.43', ipDestino: '161.67.136.11' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '161.67.136.11', ipDestino: '116.12.203.43' },
+                    { macOrigen: '77:77:77:77:77:77', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '116.12.203.43', ipDestino: '161.67.136.11' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '77:77:77:77:77:77', tipoPaquete: 'TCP [ACK]', ipOrigen: '161.67.136.11', ipDestino: '116.12.203.43' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' }
+                ]
+            },
+            {
+                name: "Escenario 6: DNS remoto, Web remoto, Gateway en caché (III)",
+                pc1Ip: '140.173.25.41',
+                pc1Mac: '55:55:55:55:55:55',
+                subnetMask: '255.252.0.0',
+                gatewayIp: '140.172.0.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '8.8.8.8',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '87.126.43.22',
+                webServerMac: 'DD:DD:DD:DD:DD:DD',
+                targetUrl: 'www.marca.com',
+                description: 'PC1 no ha realizado ninguna petición de DNS. PC1 no se ha comunicado con el exterior. La caché ARP contiene el Gateway.',
+                correctAnswers: [
+                    { macOrigen: '55:55:55:55:55:55', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'ARP request solicitando la MAC de 140.172.0.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '55:55:55:55:55:55', tipoPaquete: 'ARP reply con la MAC de 140.172.0.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '55:55:55:55:55:55', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Petición de DNS', ipOrigen: '140.173.25.41', ipDestino: '8.8.8.8' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '55:55:55:55:55:55', tipoPaquete: 'Respuesta de DNS', ipOrigen: '8.8.8.8', ipDestino: '140.173.25.41' },
+                    { macOrigen: '55:55:55:55:55:55', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [SYN]', ipOrigen: '140.173.25.41', ipDestino: '87.126.43.22' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '55:55:55:55:55:55', tipoPaquete: 'TCP [SYN]+[ACK]', ipOrigen: '87.126.43.22', ipDestino: '140.173.25.41' },
+                    { macOrigen: '55:55:55:55:55:55', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '140.173.25.41', ipDestino: '87.126.43.22' },
+                    { macOrigen: '55:55:55:55:55:55', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Peteción HTTP', ipOrigen: '140.173.25.41', ipDestino: '87.126.43.22' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '55:55:55:55:55:55', tipoPaquete: 'TCP [ACK]', ipOrigen: '87.126.43.22', ipDestino: '140.173.25.41' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '55:55:55:55:55:55', tipoPaquete: 'Respuesta HTTP', ipOrigen: '87.126.43.22', ipDestino: '140.173.25.41' },
+                    { macOrigen: '55:55:55:55:55:55', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '140.173.25.41', ipDestino: '87.126.43.22' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '55:55:55:55:55:55', tipoPaquete: 'TCP [FIN]', ipOrigen: '87.126.43.22', ipDestino: '140.173.25.41' },
+                    { macOrigen: '55:55:55:55:55:55', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '140.173.25.41', ipDestino: '87.126.43.22' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '55:55:55:55:55:55', tipoPaquete: 'TCP [ACK]', ipOrigen: '87.126.43.22', ipDestino: '140.173.25.41' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' }
+                ]
+            },
+            {
+                name: "Escenario 7: DNS local, Web remoto, DNS en caché",
+                pc1Ip: '145.64.106.45',
+                pc1Mac: '11:11:11:11:11:11',
+                subnetMask: '255.255.248.0',
+                gatewayIp: '145.64.104.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '145.64.106.10',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '145.64.112.59',
+                webServerMac: '22:22:22:22:22:22',
+                targetUrl: 'www.servidor.org',
+                description: 'PC1 ha realizado peticiones de DNS pero no sobre www.servidor.org. PC1 no se ha comunicado con el exterior. La caché ARP contiene el DNS pero no el Gateway.',
+                correctAnswers: [
+                    { macOrigen: '11:11:11:11:11:11', macDestino: '33:33:33:33:33:33', tipoPaquete: 'Petición de DNS', ipOrigen: '145.64.106.45', ipDestino: '145.64.106.10' },
+                    { macOrigen: '33:33:33:33:33:33', macDestino: '11:11:11:11:11:11', tipoPaquete: 'Respuesta de DNS', ipOrigen: '145.64.106.10', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'ARP request solicitando la MAC de 145.64.104.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'ARP reply con la MAC de 145.64.104.1', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [SYN]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [SYN]+[ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Peteción HTTP', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'Respuesta HTTP', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [FIN]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' }
+                ]
+            },
+            {
+                name: "Escenario 8: DNS local, Web remoto, Gateway en caché",
+                pc1Ip: '145.64.106.45',
+                pc1Mac: '11:11:11:11:11:11',
+                subnetMask: '255.255.248.0',
+                gatewayIp: '145.64.104.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '145.64.106.10',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '145.64.112.59',
+                webServerMac: '22:22:22:22:22:22',
+                targetUrl: 'www.servidor.org',
+                description: 'PC1 no ha realizado ninguna petición de DNS. PC1 se ha comunicado con el exterior. La caché ARP contiene el Gateway pero no el DNS.',
+                correctAnswers: [
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'ARP request solicitando la MAC de 145.64.106.10', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '33:33:33:33:33:33', macDestino: '11:11:11:11:11:11', tipoPaquete: 'ARP reply con la MAC de 145.64.106.10', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: '33:33:33:33:33:33', tipoPaquete: 'Petición de DNS', ipOrigen: '145.64.106.45', ipDestino: '145.64.106.10' },
+                    { macOrigen: '33:33:33:33:33:33', macDestino: '11:11:11:11:11:11', tipoPaquete: 'Respuesta de DNS', ipOrigen: '145.64.106.10', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [SYN]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [SYN]+[ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'Peteción HTTP', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'Respuesta HTTP', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [FIN]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '11:11:11:11:11:11', macDestino: 'AA:AA:AA:AA:AA:AA', tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: '145.64.106.45', ipDestino: '145.64.112.59' },
+                    { macOrigen: 'AA:AA:AA:AA:AA:AA', macDestino: '11:11:11:11:11:11', tipoPaquete: 'TCP [ACK]', ipOrigen: '145.64.112.59', ipDestino: '145.64.106.45' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' },
+                    { macOrigen: '---------------', macDestino: '---------------', tipoPaquete: '---------------', ipOrigen: '---------------', ipDestino: '---------------' }
+                ]
+            }
+        ];
+
+        let currentScenario = null;
+        let correctAnswers = [];
+        let studentAnswers = [];
+
+        function changeScenario() {
+            const selector = document.getElementById('scenarioSelector');
+            const index = parseInt(selector.value);
+
+            if (index < 0 || index >= scenarios.length) {
+                document.getElementById('mainContent').classList.add('hidden');
+                return;
+            }
+
+            currentScenario = scenarios[index];
+            correctAnswers = currentScenario.correctAnswers;
+            renderScenario();
+            renderExerciseTable();
+            resetExercise();
+
+            document.getElementById('mainContent').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('mainContent').style.opacity = '1';
+            }, 10);
+        }
+
+        function renderTopology() {
+            if (!currentScenario) return;
+            const container = document.getElementById('topologyContainer');
+            
+            const isWebLocal = isIPLocal(currentScenario.webServerIp, currentScenario.pc1Ip, currentScenario.subnetMask);
+            const isDnsLocal = isIPLocal(currentScenario.dnsServerIp, currentScenario.pc1Ip, currentScenario.subnetMask);
+            
+            let svg = `
+                <svg width="800" height="400" xmlns="http://www.w3.org/2000/svg" style="border: 1px solid #ccc;">
+                    <defs>
+                        <linearGradient id="localGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#e8f4f8;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#d0e8f2;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="remoteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fff0e6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ffe6cc;stop-opacity:1" />
+                        </linearGradient>
+                        <marker id="arrowgreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#228B22"/>
+                        </marker>
+                        <marker id="arroworange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#FF8C00"/>
+                        </marker>
+                        <marker id="arrowblue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#4682B4"/>
+                        </marker>
+                        <marker id="arrowred" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#DC143C"/>
+                        </marker>
+                        <marker id="arrowpurple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#9932CC"/>
+                        </marker>
+                        <marker id="arroworange2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,6 L9,3 z" fill="#FF4500"/>
+                        </marker>
+                    </defs>
+                    
+                    <!-- Local Network -->
+                    <rect x="20" y="30" width="320" height="340" fill="url(#localGrad)" stroke="#667eea" stroke-width="2" rx="5"/>
+                    <text x="35" y="55" font-size="14" font-weight="bold" fill="#667eea">Red Local (${currentScenario.pc1Ip.split('.').slice(0, 3).join('.')}.*)</text>
+                    
+                    <!-- Network Line -->
+                    <line x1="40" y1="80" x2="320" y2="80" stroke="#667eea" stroke-width="2"/>
+                    <circle cx="40" cy="80" r="3" fill="#667eea"/>
+                    <circle cx="150" cy="80" r="3" fill="#667eea"/>
+                    <circle cx="260" cy="80" r="3" fill="#667eea"/>
+                    <circle cx="320" cy="80" r="3" fill="#667eea"/>
+                    
+                    <!-- PC1 -->
+                    <rect x="35" y="110" width="80" height="60" fill="#90EE90" stroke="#228B22" stroke-width="2" rx="3"/>
+                    <text x="45" y="130" font-size="11" font-weight="bold">PC1</text>
+                    <text x="40" y="145" font-size="9" fill="#333">${currentScenario.pc1Ip}</text>
+                    <text x="35" y="160" font-size="8" fill="#666">${currentScenario.pc1Mac}</text>
+                    <line x1="75" y1="110" x2="75" y2="80" stroke="#228B22" stroke-width="1.5" marker-end="url(#arrowgreen)"/>
+                    
+                    <!-- Gateway -->
+                    <rect x="150" y="110" width="80" height="60" fill="#FFD700" stroke="#FF8C00" stroke-width="2" rx="3"/>
+                    <text x="158" y="130" font-size="11" font-weight="bold">Gateway</text>
+                    <text x="155" y="145" font-size="9" fill="#333">${currentScenario.gatewayIp}</text>
+                    <text x="155" y="160" font-size="8" fill="#666">${currentScenario.gatewayMac}</text>
+                    <line x1="190" y1="110" x2="190" y2="80" stroke="#FF8C00" stroke-width="1.5" marker-end="url(#arroworange)"/>
+                    
+                    ${isDnsLocal ? `
+                    <!-- Local DNS -->
+                    <rect x="265" y="110" width="70" height="60" fill="#87CEEB" stroke="#4682B4" stroke-width="2" rx="3"/>
+                    <text x="273" y="130" font-size="11" font-weight="bold">DNS</text>
+                    <text x="270" y="145" font-size="8" fill="#333">${currentScenario.dnsServerIp}</text>
+                    <text x="268" y="160" font-size="7" fill="#666">${currentScenario.dnsServerMac}</text>
+                    <line x1="300" y1="110" x2="300" y2="80" stroke="#4682B4" stroke-width="1.5" marker-end="url(#arrowblue)"/>
+                    ` : ''}
+                    
+                    <!-- Internet/External -->
+                    <path d="M 380 30 Q 420 30 420 80 Q 420 130 380 130 Q 420 130 420 180 Q 420 230 380 230" 
+                          fill="url(#remoteGrad)" stroke="#FF6347" stroke-width="2"/>
+                    <text x="385" y="130" font-size="12" font-weight="bold" fill="#FF6347">Internet</text>
+                    <line x1="340" y1="80" x2="380" y2="80" stroke="#333" stroke-width="2"/>
+                    
+                    ${!isDnsLocal ? `
+                    <!-- Remote DNS -->
+                    <rect x="480" y="50" width="70" height="60" fill="#FFB6C1" stroke="#DC143C" stroke-width="2" rx="3"/>
+                    <text x="492" y="70" font-size="11" font-weight="bold">DNS</text>
+                    <text x="487" y="85" font-size="8" fill="#333">${currentScenario.dnsServerIp}</text>
+                    <text x="482" y="100" font-size="7" fill="#666">${currentScenario.dnsServerMac}</text>
+                    <line x1="480" y1="80" x2="420" y2="80" stroke="#DC143C" stroke-width="1.5" marker-end="url(#arrowred)"/>
+                    ` : ''}
+                    
+                    ${!isWebLocal ? `
+                    <!-- Remote Web Server -->
+                    <rect x="480" y="180" width="85" height="60" fill="#DDA0DD" stroke="#9932CC" stroke-width="2" rx="3"/>
+                    <text x="489" y="200" font-size="11" font-weight="bold">Web Server</text>
+                    <text x="485" y="215" font-size="8" fill="#333">${currentScenario.webServerIp}</text>
+                    <text x="478" y="230" font-size="7" fill="#666">${currentScenario.webServerMac}</text>
+                    <line x1="480" y1="210" x2="420" y2="120" stroke="#9932CC" stroke-width="1.5" marker-end="url(#arrowpurple)"/>
+                    ` : `
+                    <!-- Local Web Server -->
+                    <rect x="35" y="220" width="85" height="60" fill="#FFA07A" stroke="#FF4500" stroke-width="2" rx="3"/>
+                    <text x="42" y="240" font-size="11" font-weight="bold">Web Server</text>
+                    <text x="40" y="255" font-size="8" fill="#333">${currentScenario.webServerIp}</text>
+                    <text x="35" y="270" font-size="7" fill="#666">${currentScenario.webServerMac}</text>
+                    <line x1="75" y1="220" x2="75" y2="170" stroke="#FF4500" stroke-width="1.5" marker-end="url(#arroworange2)"/>
+                    `}
+                </svg>
+            `;
+            
+            container.innerHTML = svg;
+        }
+
+        function isIPLocal(ip, pc1Ip, mask) {
+            const maskParts = mask.split('.');
+            const maskBits = maskParts.reduce((bits, part) => bits + (parseInt(part).toString(2).match(/1/g) || []).length, 0);
+            
+            const ipParts = ip.split('.').map(x => parseInt(x));
+            const pc1Parts = pc1Ip.split('.').map(x => parseInt(x));
+            
+            let bitIndex = 0;
+            for (let i = 0; i < 4; i++) {
+                for (let j = 7; j >= 0 && bitIndex < maskBits; j--) {
+                    const mask = 1 << j;
+                    if ((ipParts[i] & mask) !== (pc1Parts[i] & mask)) {
+                        return false;
+                    }
+                    bitIndex++;
+                }
+            }
+            return true;
+        }
+
+        function getAllMacs() {
+            if (!currentScenario) return [];
+            const macs = new Set([
+                currentScenario.pc1Mac,
+                currentScenario.gatewayMac,
+                currentScenario.dnsServerMac,
+                'FF:FF:FF:FF:FF:FF',
+                '---------------'
+            ]);
+            if (currentScenario.webServerMac) {
+                macs.add(currentScenario.webServerMac);
+            }
+            return Array.from(macs);
+        }
+
+        function getAllIps() {
+            if (!currentScenario) return [];
+            return Array.from(new Set([
+                currentScenario.pc1Ip,
+                currentScenario.gatewayIp,
+                currentScenario.dnsServerIp,
+                currentScenario.webServerIp,
+                '---------------'
+            ]));
+        }
+
+        function getPacketTypes() {
+            return [
+                'ARP request',
+                'ARP reply',
+                'Petición de DNS',
+                'Respuesta de DNS',
+                'TCP [SYN]',
+                'TCP [SYN]+[ACK]',
+                'TCP [ACK]',
+                'Peteción HTTP',
+                'Respuesta HTTP',
+                'TCP [FIN]',
+                'TCP [FIN]+[ACK]',
+                'ARP request solicitando la MAC de 145.64.104.1',
+                'ARP reply con la MAC de 145.64.104.1',
+                'ARP request solicitando la MAC de 145.64.105.3',
+                'ARP reply con la MAC de 145.64.105.3',
+                'ARP request solicitando la MAC de 145.64.106.10',
+                'ARP reply con la MAC de 145.64.106.10',
+                'ARP request solicitando la MAC de 93.168.0.1',
+                'ARP reply con la MAC de 93.168.0.1',
+                'ARP request solicitando la MAC de 116.12.200.1',
+                'ARP reply con la MAC de 116.12.200.1',
+                'ARP request solicitando la MAC de 140.172.0.1',
+                'ARP reply con la MAC de 140.172.0.1',
+                '---------------'
+            ];
+        }
+
+        function renderScenario() {
+            if (!currentScenario) return;
+            const descriptionDiv = document.getElementById('scenarioDescription');
+            descriptionDiv.innerHTML = `
+                <strong>Configuración de PC1:</strong><br>
+                • Dirección IP: ${currentScenario.pc1Ip}<br>
+                • Máscara de subred: ${currentScenario.subnetMask}<br>
+                • Gateway: ${currentScenario.gatewayIp}<br>
+                • Servidor DNS: ${currentScenario.dnsServerIp}<br>
+                • URL objetivo: ${currentScenario.targetUrl}<br><br>
+                <strong>Condiciones iniciales:</strong><br>
+                • ${currentScenario.description}<br><br>
+                <strong>Tarea:</strong> Completa la tabla con la secuencia correcta de tramas de red.
+            `;
+
+            const refTableBody = document.getElementById('referenceTableBody');
+            refTableBody.innerHTML = `
+                <tr><td>PC1</td><td>${currentScenario.pc1Ip}</td><td>${currentScenario.pc1Mac}</td></tr>
+                <tr><td>Gateway</td><td>${currentScenario.gatewayIp}</td><td>${currentScenario.gatewayMac}</td></tr>
+                <tr><td>Servidor DNS</td><td>${currentScenario.dnsServerIp}</td><td>${currentScenario.dnsServerMac}</td></tr>
+                <tr><td>Servidor Web</td><td>${currentScenario.webServerIp}</td><td>${currentScenario.webServerMac || 'Desconocida'}</td></tr>
+            `;
+
+            renderTopology();
+        }
+
+        function renderExerciseTable() {
+            const tableBody = document.getElementById('exerciseTableBody');
+            tableBody.innerHTML = '';
+            studentAnswers = [];
+
+            const macs = getAllMacs();
+            const ips = getAllIps();
+            const packetTypes = getPacketTypes();
+
+            for (let i = 1; i <= 16; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="row-number">${i}</td>
+                    <td>
+                        <select class="mac-origen" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${macs.map(mac => `<option value="${mac}">${mac}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="mac-destino" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${macs.map(mac => `<option value="${mac}">${mac}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="tipo-paquete" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${packetTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="ip-origen" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${ips.map(ip => `<option value="${ip}">${ip}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="ip-destino" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${ips.map(ip => `<option value="${ip}">${ip}</option>`).join('')}
+                        </select>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+
+        function checkAnswers() {
+            if (!currentScenario) return;
+            studentAnswers = [];
+            const rows = document.querySelectorAll('.exercise-table tbody tr');
+
+            rows.forEach((row, index) => {
+                studentAnswers.push({
+                    macOrigen: row.querySelector('.mac-origen').value,
+                    macDestino: row.querySelector('.mac-destino').value,
+                    tipoPaquete: row.querySelector('.tipo-paquete').value,
+                    ipOrigen: row.querySelector('.ip-origen').value,
+                    ipDestino: row.querySelector('.ip-destino').value
+                });
+            });
+
+            const feedback = [];
+            let correctCount = 0;
+            let totalCount = 0;
+
+            rows.forEach((row, index) => {
+                const student = studentAnswers[index];
+                const correct = correctAnswers[index];
+                const isCorrect = JSON.stringify(student) === JSON.stringify(correct);
+
+                const selects = row.querySelectorAll('select');
+                selects.forEach(select => {
+                    select.classList.remove('correct', 'incorrect');
+                });
+
+                if (student.tipoPaquete !== '' && student.tipoPaquete !== '---------------') {
+                    totalCount++;
+                    if (isCorrect) {
+                        selects.forEach(select => select.classList.add('correct'));
+                        correctCount++;
+                        feedback.push({
+                            row: index + 1,
+                            isCorrect: true,
+                            explanation: `✓ Fila correcta.`
+                        });
+                    } else {
+                        selects.forEach(select => select.classList.add('incorrect'));
+                        feedback.push({
+                            row: index + 1,
+                            isCorrect: false,
+                            explanation: generateExplanation(index, student, correct)
+                        });
+                    }
+                } else if (student.macOrigen === '' && student.macDestino === '' && student.tipoPaquete === '') {
+                    feedback.push({
+                        row: index + 1,
+                        isCorrect: true,
+                        explanation: '(Fila vacía - Fin de la secuencia)'
+                    });
+                }
+            });
+
+            displayFeedback(feedback, correctCount, totalCount);
+        }
+
+        function generateExplanation(rowIndex, student, correct) {
+            let issues = [];
+            if (student.macOrigen !== correct.macOrigen) {
+                issues.push(`MAC Origen: esperado ${correct.macOrigen}, obtenido ${student.macOrigen}`);
+            }
+            if (student.macDestino !== correct.macDestino) {
+                issues.push(`MAC Destino: esperado ${correct.macDestino}, obtenido ${student.macDestino}`);
+            }
+            if (student.tipoPaquete !== correct.tipoPaquete) {
+                issues.push(`Tipo: esperado "${correct.tipoPaquete}", obtenido "${student.tipoPaquete}"`);
+            }
+            if (student.ipOrigen !== correct.ipOrigen) {
+                issues.push(`IP Origen: esperado ${correct.ipOrigen}, obtenido ${student.ipOrigen}`);
+            }
+            if (student.ipDestino !== correct.ipDestino) {
+                issues.push(`IP Destino: esperado ${correct.ipDestino}, obtenido ${student.ipDestino}`);
+            }
+            return issues.join(' | ') || 'Incongruencia en la fila';
+        }
+
+        function displayFeedback(feedback, correctCount, totalCount) {
+            const feedbackSection = document.getElementById('feedbackSection');
+            const feedbackContent = document.getElementById('feedbackContent');
+
+            let html = '<div>';
+            feedback.forEach(item => {
+                html += `
+                    <div class="feedback-item ${item.isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="feedback-row">Fila ${item.row}: ${item.isCorrect ? '✓ Correcta' : '✗ Incorrecta'}</div>
+                        <div class="feedback-explanation">${item.explanation}</div>
+                    </div>
+                `;
+            });
+
+            const score = totalCount > 0 ? ((correctCount / totalCount) * 100).toFixed(0) : 0;
+            html += `
+                <div class="score">
+                    Puntuación: ${score}% (${correctCount}/${totalCount} filas correctas)
+                </div>
+            </div>
+            `;
+
+            feedbackContent.innerHTML = html;
+            feedbackSection.classList.remove('hidden');
+            feedbackSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetExercise() {
+            document.querySelectorAll('select').forEach(select => {
+                select.value = '';
+                select.classList.remove('correct', 'incorrect');
+            });
+            document.getElementById('feedbackSection').classList.add('hidden');
+        }
+
+        const progressStorageKey = 'networkingExerciseProgressV1';
+
+        function getFallbackProgress() {
+            try {
+                return JSON.parse(localStorage.getItem(progressStorageKey) || '{"quizzesSolved":0,"bestScore":0,"lastScenario":"","lastStage":"arp"}');
+            } catch {
+                return { quizzesSolved: 0, bestScore: 0, lastScenario: '', lastStage: 'arp' };
+            }
+        }
+
+        function getProgressState() {
+            return getFallbackProgress();
+        }
+
+        async function saveProgress(updates) {
+            const current = getProgressState();
+            const next = { ...current, ...updates };
+            localStorage.setItem(progressStorageKey, JSON.stringify(next));
+
+            try {
+                await fetch('/api/progress', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(next)
+                });
+            } catch {
+                // Local fallback already saved.
+            }
+
+            renderProgressSummary();
+        }
+
+        async function loadSavedProgress(requestedStage = '') {
+            let saved = getFallbackProgress();
+
+            try {
+                const response = await fetch('/api/progress');
+                if (response.ok) {
+                    const serverState = await response.json();
+                    saved = { ...saved, ...serverState };
+                    localStorage.setItem(progressStorageKey, JSON.stringify(saved));
+                }
+            } catch {
+                // Local fallback already available.
+            }
+
+            const stageToLoad = requestedStage || saved.lastStage;
+            if (stageToLoad) {
+                showLearningStage(stageToLoad);
+            }
+
+            const selector = document.getElementById('scenarioSelector');
+            if (selector && saved.lastScenario !== '') {
+                selector.value = saved.lastScenario;
+            }
+
+            renderProgressSummary();
+        }
+
+        function getRequestedModeFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('mode') || '';
+        }
+
+        function resolveStageMode(mode) {
+            if (mode === 'arp' || mode === 'arp-dns' || mode === 'arp-dns-dhcp' || mode === 'full') {
+                return mode;
+            }
+            return '';
+        }
+
+        function renderProgressSummary() {
+            const container = document.getElementById('progressSummary');
+            if (!container) return;
+            const state = getProgressState();
+            container.innerHTML = `
+                <div class="progress-stat"><strong>${practiceScenarios.length}</strong><span>escenarios</span></div>
+                <div class="progress-stat"><strong>${state.quizzesSolved}</strong><span>quizzes resueltos</span></div>
+                <div class="progress-stat"><strong>${state.bestScore}%</strong><span>mejor nota</span></div>
+                <div class="progress-stat"><strong>${state.lastStage || 'arp'}</strong><span>último bloque</span></div>
+            `;
+        }
+
+        function renderArpQuiz() {
+            const container = document.getElementById('arpQuizOptions');
+            if (!container) return;
+            container.innerHTML = `
+                <div class="quiz-option" data-answer="1" onclick="selectArpQuizOption(this)">ARP se usa para descubrir la MAC del siguiente salto o del destino local.</div>
+                <div class="quiz-option" data-answer="0" onclick="selectArpQuizOption(this)">ARP traduce nombres como www.ejemplo.com a una IP.</div>
+                <div class="quiz-option" data-answer="0" onclick="selectArpQuizOption(this)">ARP asigna una IP cuando un equipo arranca.</div>
+            `;
+        }
+
+        function selectArpQuizOption(option) {
+            document.querySelectorAll('.quiz-option').forEach(item => item.classList.remove('selected'));
+            option.classList.add('selected');
+        }
+
+        function checkArpQuiz() {
+            const selected = document.querySelector('.quiz-option.selected');
+            const result = document.getElementById('arpQuizResult');
+            if (!selected || !result) return;
+
+            const isCorrect = selected.dataset.answer === '1';
+            result.textContent = isCorrect ? 'Correcto: ARP resuelve MACs, no nombres ni IPs.' : 'No: eso es DNS o DHCP, no ARP.';
+            result.className = `quiz-result ${isCorrect ? 'correct' : 'incorrect'}`;
+
+            const state = getProgressState();
+            saveProgress({
+                quizzesSolved: state.quizzesSolved + 1,
+                bestScore: isCorrect ? Math.max(state.bestScore, 100) : state.bestScore,
+                lastStage: currentLearningStage
+            });
+        }
+
+        function resetArpQuiz() {
+            document.querySelectorAll('.quiz-option').forEach(item => item.classList.remove('selected'));
+            const result = document.getElementById('arpQuizResult');
+            if (result) {
+                result.textContent = '';
+                result.className = 'quiz-result';
+            }
+        }
+
+        const learningStages = {
+            arp: {
+                title: 'ARP solo',
+                lead: 'Primero entiende la pregunta clave: ¿a qué MAC debo enviar el siguiente salto?',
+                points: [
+                    'Si el destino está en la misma subred, ARP busca la MAC del destino final.',
+                    'Si el destino está fuera de la subred, ARP busca la MAC del gateway.',
+                    'Si la MAC ya está en caché, ARP no aparece.'
+                ]
+            },
+            'arp-dns': {
+                title: 'ARP + DNS',
+                lead: 'Aquí aparece la traducción nombre → IP. DNS solo sale si hace falta resolver un nombre.',
+                points: [
+                    'Primero se resuelve la MAC necesaria con ARP.',
+                    'Después, si el usuario escribe un nombre y no una IP, se consulta DNS.',
+                    'Si la IP ya se conoce o está cacheada, DNS no es necesario.'
+                ]
+            },
+            'arp-dns-dhcp': {
+                title: 'ARP + DNS + DHCP',
+                lead: 'DHCP va antes de todo lo demás cuando el host todavía no tiene configuración IP.',
+                points: [
+                    'DHCP entrega IP, máscara, gateway y DNS.',
+                    'Después de DHCP, PC1 ya puede hacer ARP/DNS normalmente.',
+                    'Si no hay IP todavía, no puede hablar con ningún servidor.'
+                ]
+            },
+            full: {
+                title: 'ARP + DNS + DHCP + servidor',
+                lead: 'Este es el flujo completo: configuración, resolución, conexión TCP y cierre.',
+                points: [
+                    'DHCP obtiene la configuración si hace falta.',
+                    'ARP prepara la MAC del siguiente salto.',
+                    'DNS resuelve el nombre si el usuario no usa la IP directa.',
+                    'Después vienen SYN, SYN+ACK, ACK, HTTP y FIN.'
+                ]
+            }
+        };
+
+        const practiceProfiles = [
+            {
+                code: 'A',
+                name: 'Perfil A · DNS local / Web remoto',
+                pc1Ip: '145.64.106.45',
+                pc1Mac: '11:11:11:11:11:11',
+                subnetMask: '255.255.248.0',
+                gatewayIp: '145.64.104.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '145.64.106.10',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '145.64.112.59',
+                webServerMac: '22:22:22:22:22:22',
+                targetName: 'www.servidor.org'
+            },
+            {
+                code: 'B',
+                name: 'Perfil B · DNS remoto / Web local',
+                pc1Ip: '93.170.23.5',
+                pc1Mac: '99:99:99:99:99:99',
+                subnetMask: '255.248.0.0',
+                gatewayIp: '93.168.0.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '8.8.8.8',
+                dnsServerMac: '88:88:88:88:88:88',
+                webServerIp: '93.171.1.20',
+                webServerMac: 'CC:CC:CC:CC:CC:CC',
+                targetName: 'www.elpais.es'
+            },
+            {
+                code: 'C',
+                name: 'Perfil C · DNS local / Web local',
+                pc1Ip: '192.168.10.45',
+                pc1Mac: '55:55:55:55:55:55',
+                subnetMask: '255.255.255.0',
+                gatewayIp: '192.168.10.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '192.168.10.10',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '192.168.10.80',
+                webServerMac: 'DD:DD:DD:DD:DD:DD',
+                targetName: 'intranet.local'
+            },
+            {
+                code: 'D',
+                name: 'Perfil D · DNS remoto / Web remoto',
+                pc1Ip: '200.89.101.153',
+                pc1Mac: '66:66:66:66:66:66',
+                subnetMask: '255.255.255.128',
+                gatewayIp: '200.89.101.129',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '8.8.8.8',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '45.67.81.4',
+                webServerMac: 'BB:BB:BB:BB:BB:BB',
+                targetName: 'www.elmundo.es'
+            },
+            {
+                code: 'E',
+                name: 'Perfil E · DNS local / Web remoto (segunda red)',
+                pc1Ip: '140.173.25.41',
+                pc1Mac: '77:77:77:77:77:77',
+                subnetMask: '255.252.0.0',
+                gatewayIp: '140.172.0.1',
+                gatewayMac: 'AA:AA:AA:AA:AA:AA',
+                dnsServerIp: '140.173.30.10',
+                dnsServerMac: '33:33:33:33:33:33',
+                webServerIp: '87.126.43.22',
+                webServerMac: 'DD:DD:DD:DD:DD:DD',
+                targetName: 'www.marca.com'
+            }
+        ];
+
+        const practiceModes = [
+            { key: 'empty', label: 'Caché vacía', cache: { gateway: false, dns: false, web: false }, useDns: true, useDhcp: false, useDirect: false, stage: 'arp-dns' },
+            { key: 'gateway', label: 'Gateway en caché', cache: { gateway: true, dns: false, web: false }, useDns: true, useDhcp: false, useDirect: false, stage: 'arp-dns' },
+            { key: 'dns', label: 'DNS en caché', cache: { gateway: false, dns: true, web: false }, useDns: true, useDhcp: false, useDirect: false, stage: 'arp-dns' },
+            { key: 'full', label: 'Caché completa', cache: { gateway: true, dns: true, web: true }, useDns: true, useDhcp: false, useDirect: false, stage: 'full' },
+            { key: 'direct', label: 'IP directa', cache: { gateway: false, dns: false, web: false }, useDns: false, useDhcp: false, useDirect: true, stage: 'arp' },
+            { key: 'dhcp', label: 'DHCP + flujo completo', cache: { gateway: false, dns: false, web: false }, useDns: true, useDhcp: true, useDirect: false, stage: 'arp-dns-dhcp' }
+        ];
+
+        let practiceScenarios = [];
+        let currentLearningStage = 'arp';
+
+        document.addEventListener('DOMContentLoaded', initPracticePlatform);
+
+        async function initPracticePlatform() {
+            practiceScenarios = buildPracticeScenarios();
+            populateScenarioSelector();
+            renderLearningStage(currentLearningStage);
+            renderProgressSummary();
+            renderArpQuiz();
+
+            const requestedStage = resolveStageMode(getRequestedModeFromUrl());
+            await loadSavedProgress(requestedStage);
+
+            if (requestedStage) {
+                currentLearningStage = requestedStage;
+                renderLearningStage(requestedStage);
+
+                const selector = document.getElementById('scenarioSelector');
+                const stageIndex = practiceScenarios.findIndex(scenario => scenario.practiceStage === requestedStage);
+                if (selector && stageIndex >= 0) {
+                    selector.value = String(stageIndex);
+                    changeScenario();
+                }
+            }
+        }
+
+        function buildPracticeScenarios() {
+            const scenarios = [];
+            practiceProfiles.forEach(profile => {
+                practiceModes.forEach(mode => {
+                    scenarios.push(buildScenario(profile, mode));
+                });
+            });
+            return scenarios;
+        }
+
+        function buildScenario(profile, mode) {
+            const isDnsLocal = isIPLocal(profile.dnsServerIp, profile.pc1Ip, profile.subnetMask);
+            const isWebLocal = isIPLocal(profile.webServerIp, profile.pc1Ip, profile.subnetMask);
+            const rows = [];
+            const cache = { ...mode.cache };
+
+            if (mode.useDhcp) {
+                rows.push(
+                    { macOrigen: profile.pc1Mac, macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'DHCP Discover', ipOrigen: '0.0.0.0', ipDestino: '255.255.255.255' },
+                    { macOrigen: profile.gatewayMac, macDestino: profile.pc1Mac, tipoPaquete: 'DHCP Offer', ipOrigen: profile.gatewayIp, ipDestino: '255.255.255.255' },
+                    { macOrigen: profile.pc1Mac, macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: 'DHCP Request', ipOrigen: '0.0.0.0', ipDestino: '255.255.255.255' },
+                    { macOrigen: profile.gatewayMac, macDestino: profile.pc1Mac, tipoPaquete: 'DHCP Ack', ipOrigen: profile.gatewayIp, ipDestino: profile.pc1Ip }
+                );
+            }
+
+            if (mode.useDns) {
+                if (isDnsLocal) {
+                    if (!cache.dns) {
+                        addArpPair(rows, profile.pc1Mac, profile.dnsServerMac, profile.dnsServerIp);
+                    }
+                    rows.push(
+                        { macOrigen: profile.pc1Mac, macDestino: profile.dnsServerMac, tipoPaquete: 'Petición de DNS', ipOrigen: profile.pc1Ip, ipDestino: profile.dnsServerIp },
+                        { macOrigen: profile.dnsServerMac, macDestino: profile.pc1Mac, tipoPaquete: 'Respuesta de DNS', ipOrigen: profile.dnsServerIp, ipDestino: profile.pc1Ip }
+                    );
+                } else {
+                    if (!cache.gateway) {
+                        addArpPair(rows, profile.pc1Mac, profile.gatewayMac, profile.gatewayIp);
+                        cache.gateway = true;
+                    }
+                    rows.push(
+                        { macOrigen: profile.pc1Mac, macDestino: profile.gatewayMac, tipoPaquete: 'Petición de DNS', ipOrigen: profile.pc1Ip, ipDestino: profile.dnsServerIp },
+                        { macOrigen: profile.gatewayMac, macDestino: profile.pc1Mac, tipoPaquete: 'Respuesta de DNS', ipOrigen: profile.dnsServerIp, ipDestino: profile.pc1Ip }
+                    );
+                }
+            }
+
+            if (isWebLocal) {
+                if (!cache.web) {
+                    addArpPair(rows, profile.pc1Mac, profile.webServerMac, profile.webServerIp);
+                }
+                addTcpHttpFlow(rows, profile.pc1Mac, profile.webServerMac, profile.pc1Ip, profile.webServerIp);
+            } else {
+                if (!cache.gateway) {
+                    addArpPair(rows, profile.pc1Mac, profile.gatewayMac, profile.gatewayIp);
+                }
+                addTcpHttpFlow(rows, profile.pc1Mac, profile.gatewayMac, profile.pc1Ip, profile.webServerIp);
+            }
+
+            const targetLabel = mode.useDirect ? `http://${profile.webServerIp}` : profile.targetName;
+            const descriptionBits = [
+                `Escenario basado en ${profile.name}.`,
+                `Estado inicial: ${mode.label.toLowerCase()}.`,
+                mode.useDhcp ? 'PC1 todavía no tiene configuración IP y debe obtenerla primero.' : 'PC1 ya tiene configuración IP estática.',
+                mode.useDns ? 'La resolución DNS forma parte de la secuencia.' : 'No hace falta DNS: el acceso va directo a la IP.',
+                `Objetivo: ${targetLabel}.`
+            ];
+
+            const correctAnswers = padRows(rows);
+            return {
+                ...profile,
+                name: `${profile.code} · ${mode.label}`,
+                profileName: profile.name,
+                modeKey: mode.key,
+                practiceStage: mode.stage,
+                useDhcp: mode.useDhcp,
+                useDns: mode.useDns,
+                useDirect: mode.useDirect,
+                targetUrl: targetLabel,
+                description: descriptionBits.join(' '),
+                correctAnswers,
+                devices: [
+                    { label: 'PC1', ip: profile.pc1Ip, mac: profile.pc1Mac },
+                    { label: mode.useDhcp ? 'Gateway / DHCP' : 'Gateway', ip: profile.gatewayIp, mac: profile.gatewayMac },
+                    { label: 'Servidor DNS', ip: profile.dnsServerIp, mac: profile.dnsServerMac },
+                    { label: 'Servidor Web', ip: profile.webServerIp, mac: profile.webServerMac }
+                ]
+            };
+        }
+
+        function addArpPair(rows, sourceMac, targetMac, targetIp) {
+            rows.push(
+                { macOrigen: sourceMac, macDestino: 'FF:FF:FF:FF:FF:FF', tipoPaquete: `ARP request solicitando la MAC de ${targetIp}`, ipOrigen: '---------------', ipDestino: '---------------' },
+                { macOrigen: targetMac, macDestino: sourceMac, tipoPaquete: `ARP reply con la MAC de ${targetIp}`, ipOrigen: '---------------', ipDestino: '---------------' }
+            );
+        }
+
+        function addTcpHttpFlow(rows, sourceMac, destinationMac, sourceIp, destinationIp) {
+            rows.push(
+                { macOrigen: sourceMac, macDestino: destinationMac, tipoPaquete: 'TCP [SYN]', ipOrigen: sourceIp, ipDestino: destinationIp },
+                { macOrigen: destinationMac, macDestino: sourceMac, tipoPaquete: 'TCP [SYN]+[ACK]', ipOrigen: destinationIp, ipDestino: sourceIp },
+                { macOrigen: sourceMac, macDestino: destinationMac, tipoPaquete: 'TCP [ACK]', ipOrigen: sourceIp, ipDestino: destinationIp },
+                { macOrigen: sourceMac, macDestino: destinationMac, tipoPaquete: 'Petición HTTP', ipOrigen: sourceIp, ipDestino: destinationIp },
+                { macOrigen: destinationMac, macDestino: sourceMac, tipoPaquete: 'TCP [ACK]', ipOrigen: destinationIp, ipDestino: sourceIp },
+                { macOrigen: destinationMac, macDestino: sourceMac, tipoPaquete: 'Respuesta HTTP', ipOrigen: destinationIp, ipDestino: sourceIp },
+                { macOrigen: sourceMac, macDestino: destinationMac, tipoPaquete: 'TCP [ACK]', ipOrigen: sourceIp, ipDestino: destinationIp },
+                { macOrigen: destinationMac, macDestino: sourceMac, tipoPaquete: 'TCP [FIN]', ipOrigen: destinationIp, ipDestino: sourceIp },
+                { macOrigen: sourceMac, macDestino: destinationMac, tipoPaquete: 'TCP [FIN]+[ACK]', ipOrigen: sourceIp, ipDestino: destinationIp },
+                { macOrigen: destinationMac, macDestino: sourceMac, tipoPaquete: 'TCP [ACK]', ipOrigen: destinationIp, ipDestino: sourceIp }
+            );
+        }
+
+        function blankRow() {
+            return {
+                macOrigen: '---------------',
+                macDestino: '---------------',
+                tipoPaquete: '---------------',
+                ipOrigen: '---------------',
+                ipDestino: '---------------'
+            };
+        }
+
+        function padRows(rows, total = 16) {
+            const output = rows.slice(0, total);
+            while (output.length < total) {
+                output.push(blankRow());
+            }
+            return output;
+        }
+
+        function populateScenarioSelector() {
+            const selector = document.getElementById('scenarioSelector');
+            if (!selector) return;
+            selector.innerHTML = '<option value="">-- Elige un escenario --</option>' + practiceScenarios.map((scenario, index) => {
+                return `<option value="${index}">${index + 1}. ${scenario.name}</option>`;
+            }).join('');
+        }
+
+        function showLearningStage(stage) {
+            currentLearningStage = stage;
+            renderLearningStage(stage);
+        }
+
+        function focusStage(stage) {
+            showLearningStage(stage);
+            const selector = document.getElementById('scenarioSelector');
+            const index = practiceScenarios.findIndex(scenario => scenario.practiceStage === stage);
+            if (selector && index >= 0) {
+                selector.value = String(index);
+                changeScenario();
+            }
+        }
+
+        function renderLearningStage(stage) {
+            const panel = document.getElementById('learningPanel');
+            if (!panel) return;
+            const info = learningStages[stage] || learningStages.arp;
+            const buttons = document.querySelectorAll('.learning-tab');
+            const stageOrder = ['arp', 'arp-dns', 'arp-dns-dhcp', 'full'];
+
+            buttons.forEach((button, index) => {
+                button.classList.toggle('active', stageOrder[index] === stage);
+            });
+
+            panel.innerHTML = `
+                <h3>${info.title}</h3>
+                <p style="margin: 10px 0 12px 0; color: #444;">${info.lead}</p>
+                <ul style="padding-left: 18px; line-height: 1.7; color: #555;">
+                    ${info.points.map(point => `<li>${point}</li>`).join('')}
+                </ul>
+                <div class="mini-rules" style="margin-top: 14px; background: #f7fbff; border-color: #d4e4ff;">
+                    <strong>Pregunta guía:</strong> ¿qué sabe PC1 ya, qué le falta y a quién debe preguntar primero?
+                </div>
+            `;
+        }
+
+        function changeScenario() {
+            const selector = document.getElementById('scenarioSelector');
+            if (!selector) return;
+            const index = parseInt(selector.value, 10);
+
+            if (Number.isNaN(index) || index < 0 || index >= practiceScenarios.length) {
+                document.getElementById('mainContent').classList.add('hidden');
+                return;
+            }
+
+            currentScenario = practiceScenarios[index];
+            correctAnswers = currentScenario.correctAnswers;
+            renderScenario();
+            renderExerciseTable();
+            resetExercise();
+            saveProgress({ lastScenario: selector.value, lastStage: currentScenario.practiceStage });
+
+            const mainContent = document.getElementById('mainContent');
+            mainContent.classList.remove('hidden');
+            mainContent.style.opacity = '1';
+        }
+
+        function renderScenario() {
+            if (!currentScenario) return;
+            const descriptionDiv = document.getElementById('scenarioDescription');
+            const cacheLabel = currentScenario.modeKey === 'empty' ? 'vacía' : currentScenario.modeKey === 'gateway' ? 'gateway' : currentScenario.modeKey === 'dns' ? 'DNS' : currentScenario.modeKey === 'full' ? 'completa' : currentScenario.modeKey === 'dhcp' ? 'DHCP inicial' : 'directa';
+            descriptionDiv.innerHTML = `
+                <strong>Escenario:</strong> ${currentScenario.name}<br>
+                <strong>Perfil base:</strong> ${currentScenario.profileName}<br>
+                <strong>Modo de práctica:</strong> ${currentScenario.practiceStage}<br>
+                <strong>Configuración de PC1:</strong><br>
+                • Dirección IP: ${currentScenario.pc1Ip}<br>
+                • Máscara de subred: ${currentScenario.subnetMask}<br>
+                • Gateway: ${currentScenario.gatewayIp}<br>
+                • Servidor DNS: ${currentScenario.dnsServerIp}<br>
+                • URL objetivo: ${currentScenario.targetUrl}<br>
+                • Caché inicial: ${cacheLabel}<br><br>
+                <strong>Condiciones iniciales:</strong><br>
+                • ${currentScenario.description}<br><br>
+                <strong>Tarea:</strong> Completa la tabla con la secuencia correcta de tramas de red.
+            `;
+
+            const refTableBody = document.getElementById('referenceTableBody');
+            const extraRow = currentScenario.useDhcp ? `<tr><td>Servidor DHCP</td><td>${currentScenario.gatewayIp}</td><td>${currentScenario.gatewayMac}</td></tr>` : '';
+            refTableBody.innerHTML = `
+                <tr><td>PC1</td><td>${currentScenario.pc1Ip}</td><td>${currentScenario.pc1Mac}</td></tr>
+                <tr><td>Gateway</td><td>${currentScenario.gatewayIp}</td><td>${currentScenario.gatewayMac}</td></tr>
+                <tr><td>Servidor DNS</td><td>${currentScenario.dnsServerIp}</td><td>${currentScenario.dnsServerMac}</td></tr>
+                <tr><td>Servidor Web</td><td>${currentScenario.webServerIp}</td><td>${currentScenario.webServerMac}</td></tr>
+                ${extraRow}
+            `;
+
+            renderTopology();
+        }
+
+        function renderTopology() {
+            if (!currentScenario) return;
+            const container = document.getElementById('topologyContainer');
+            if (!container) return;
+
+            const isDnsLocal = isIPLocal(currentScenario.dnsServerIp, currentScenario.pc1Ip, currentScenario.subnetMask);
+            const isWebLocal = isIPLocal(currentScenario.webServerIp, currentScenario.pc1Ip, currentScenario.subnetMask);
+            const gatewayLabel = currentScenario.useDhcp ? 'Gateway / DHCP' : 'Gateway';
+
+            container.innerHTML = `
+                <svg width="860" height="420" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
+                    <defs>
+                        <linearGradient id="localGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#e8f4f8;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#d0e8f2;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="remoteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#fff0e6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ffe6cc;stop-opacity:1" />
+                        </linearGradient>
+                        <marker id="arrowgreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#228B22"/></marker>
+                        <marker id="arroworange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#FF8C00"/></marker>
+                        <marker id="arrowblue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#4682B4"/></marker>
+                        <marker id="arrowred" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#DC143C"/></marker>
+                        <marker id="arrowpurple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#9932CC"/></marker>
+                        <marker id="arroworange2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#FF4500"/></marker>
+                    </defs>
+                    <rect x="20" y="30" width="360" height="360" fill="url(#localGrad)" stroke="#667eea" stroke-width="2" rx="8"/>
+                    <text x="35" y="55" font-size="14" font-weight="bold" fill="#667eea">Red local</text>
+                    <line x1="40" y1="85" x2="350" y2="85" stroke="#667eea" stroke-width="2"/>
+                    <circle cx="40" cy="85" r="3" fill="#667eea"/>
+                    <circle cx="160" cy="85" r="3" fill="#667eea"/>
+                    <circle cx="280" cy="85" r="3" fill="#667eea"/>
+                    <circle cx="350" cy="85" r="3" fill="#667eea"/>
+
+                    <rect x="35" y="115" width="90" height="62" fill="#90EE90" stroke="#228B22" stroke-width="2" rx="4"/>
+                    <text x="45" y="135" font-size="11" font-weight="bold">PC1</text>
+                    <text x="40" y="150" font-size="9">${currentScenario.pc1Ip}</text>
+                    <text x="35" y="164" font-size="8" fill="#666">${currentScenario.pc1Mac}</text>
+                    <line x1="80" y1="115" x2="80" y2="85" stroke="#228B22" stroke-width="1.5" marker-end="url(#arrowgreen)"/>
+
+                    <rect x="165" y="115" width="90" height="62" fill="#FFD700" stroke="#FF8C00" stroke-width="2" rx="4"/>
+                    <text x="172" y="135" font-size="11" font-weight="bold">${gatewayLabel}</text>
+                    <text x="170" y="150" font-size="9">${currentScenario.gatewayIp}</text>
+                    <text x="165" y="164" font-size="8" fill="#666">${currentScenario.gatewayMac}</text>
+                    <line x1="210" y1="115" x2="210" y2="85" stroke="#FF8C00" stroke-width="1.5" marker-end="url(#arroworange)"/>
+
+                    ${isDnsLocal ? `
+                    <rect x="295" y="115" width="70" height="62" fill="#87CEEB" stroke="#4682B4" stroke-width="2" rx="4"/>
+                    <text x="303" y="135" font-size="11" font-weight="bold">DNS</text>
+                    <text x="300" y="150" font-size="8">${currentScenario.dnsServerIp}</text>
+                    <text x="298" y="164" font-size="7" fill="#666">${currentScenario.dnsServerMac}</text>
+                    <line x1="330" y1="115" x2="330" y2="85" stroke="#4682B4" stroke-width="1.5" marker-end="url(#arrowblue)"/>
+                    ` : ''}
+
+                    <path d="M 405 30 Q 445 30 445 80 Q 445 130 405 130 Q 445 130 445 180 Q 445 230 405 230" fill="url(#remoteGrad)" stroke="#FF6347" stroke-width="2"/>
+                    <text x="410" y="130" font-size="12" font-weight="bold" fill="#FF6347">Internet</text>
+                    <line x1="380" y1="85" x2="405" y2="85" stroke="#333" stroke-width="2"/>
+
+                    ${!isDnsLocal ? `
+                    <rect x="500" y="50" width="85" height="62" fill="#FFB6C1" stroke="#DC143C" stroke-width="2" rx="4"/>
+                    <text x="512" y="70" font-size="11" font-weight="bold">DNS</text>
+                    <text x="507" y="85" font-size="8">${currentScenario.dnsServerIp}</text>
+                    <text x="502" y="100" font-size="7" fill="#666">${currentScenario.dnsServerMac}</text>
+                    <line x1="500" y1="81" x2="445" y2="81" stroke="#DC143C" stroke-width="1.5" marker-end="url(#arrowred)"/>
+                    ` : ''}
+
+                    ${isWebLocal ? `
+                    <rect x="35" y="235" width="100" height="62" fill="#FFA07A" stroke="#FF4500" stroke-width="2" rx="4"/>
+                    <text x="42" y="255" font-size="11" font-weight="bold">Web Server</text>
+                    <text x="40" y="270" font-size="8">${currentScenario.webServerIp}</text>
+                    <text x="35" y="284" font-size="7" fill="#666">${currentScenario.webServerMac}</text>
+                    <line x1="85" y1="235" x2="85" y2="177" stroke="#FF4500" stroke-width="1.5" marker-end="url(#arroworange2)"/>
+                    ` : `
+                    <rect x="500" y="190" width="100" height="62" fill="#DDA0DD" stroke="#9932CC" stroke-width="2" rx="4"/>
+                    <text x="509" y="210" font-size="11" font-weight="bold">Web Server</text>
+                    <text x="505" y="225" font-size="8">${currentScenario.webServerIp}</text>
+                    <text x="500" y="239" font-size="7" fill="#666">${currentScenario.webServerMac}</text>
+                    <line x1="500" y1="220" x2="445" y2="140" stroke="#9932CC" stroke-width="1.5" marker-end="url(#arrowpurple)"/>
+                    `}
+                </svg>
+            `;
+        }
+
+        function isIPLocal(ip, pc1Ip, mask) {
+            const ipParts = ip.split('.').map(Number);
+            const pc1Parts = pc1Ip.split('.').map(Number);
+            const maskParts = mask.split('.').map(Number);
+
+            for (let i = 0; i < 4; i++) {
+                if ((ipParts[i] & maskParts[i]) !== (pc1Parts[i] & maskParts[i])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function getAllMacs() {
+            if (!currentScenario) return [];
+            const macs = new Set([
+                currentScenario.pc1Mac,
+                currentScenario.gatewayMac,
+                currentScenario.dnsServerMac,
+                currentScenario.webServerMac,
+                'FF:FF:FF:FF:FF:FF',
+                '---------------'
+            ]);
+            return Array.from(macs);
+        }
+
+        function getAllIps() {
+            if (!currentScenario) return [];
+            const ips = new Set([
+                currentScenario.pc1Ip,
+                currentScenario.gatewayIp,
+                currentScenario.dnsServerIp,
+                currentScenario.webServerIp,
+                '0.0.0.0',
+                '255.255.255.255',
+                '---------------'
+            ]);
+            return Array.from(ips);
+        }
+
+        function getPacketTypes() {
+            if (!currentScenario) return [];
+            const packetTypes = new Set(currentScenario.correctAnswers.map(answer => answer.tipoPaquete));
+            packetTypes.add('---------------');
+            return Array.from(packetTypes);
+        }
+
+        function renderExerciseTable() {
+            const tableBody = document.getElementById('exerciseTableBody');
+            tableBody.innerHTML = '';
+            studentAnswers = [];
+
+            const macs = getAllMacs();
+            const ips = getAllIps();
+            const packetTypes = getPacketTypes();
+
+            for (let i = 1; i <= 16; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="row-number">${i}</td>
+                    <td>
+                        <select class="mac-origen" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${macs.map(mac => `<option value="${mac}">${mac}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="mac-destino" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${macs.map(mac => `<option value="${mac}">${mac}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="tipo-paquete" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${packetTypes.map(type => `<option value="${type}">${type}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="ip-origen" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${ips.map(ip => `<option value="${ip}">${ip}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select class="ip-destino" data-row="${i}">
+                            <option value="">Selecciona...</option>
+                            ${ips.map(ip => `<option value="${ip}">${ip}</option>`).join('')}
+                        </select>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+
+        function checkAnswers() {
+            if (!currentScenario) return;
+            studentAnswers = [];
+            const rows = document.querySelectorAll('.exercise-table tbody tr');
+
+            rows.forEach(row => {
+                studentAnswers.push({
+                    macOrigen: row.querySelector('.mac-origen').value,
+                    macDestino: row.querySelector('.mac-destino').value,
+                    tipoPaquete: row.querySelector('.tipo-paquete').value,
+                    ipOrigen: row.querySelector('.ip-origen').value,
+                    ipDestino: row.querySelector('.ip-destino').value
+                });
+            });
+
+            const feedback = [];
+            let correctCount = 0;
+            let totalCount = 0;
+
+            rows.forEach((row, index) => {
+                const student = studentAnswers[index];
+                const correct = correctAnswers[index] || blankRow();
+                const isCorrect = JSON.stringify(student) === JSON.stringify(correct);
+                const selects = row.querySelectorAll('select');
+
+                selects.forEach(select => select.classList.remove('correct', 'incorrect'));
+
+                if (correct.tipoPaquete !== '---------------') {
+                    totalCount++;
+                    if (isCorrect) {
+                        selects.forEach(select => select.classList.add('correct'));
+                        correctCount++;
+                        feedback.push({ row: index + 1, isCorrect: true, explanation: '✓ Fila correcta.' });
+                    } else {
+                        selects.forEach(select => select.classList.add('incorrect'));
+                        feedback.push({ row: index + 1, isCorrect: false, explanation: generateExplanation(student, correct) });
+                    }
+                } else if (student.macOrigen === '' && student.macDestino === '' && student.tipoPaquete === '') {
+                    feedback.push({ row: index + 1, isCorrect: true, explanation: '(Fila vacía - fin de la secuencia)' });
+                }
+            });
+
+            displayFeedback(feedback, correctCount, totalCount);
+        }
+
+        function generateExplanation(student, correct) {
+            const issues = [];
+            if (student.macOrigen !== correct.macOrigen) issues.push(`MAC Origen: esperado ${correct.macOrigen}, obtenido ${student.macOrigen}`);
+            if (student.macDestino !== correct.macDestino) issues.push(`MAC Destino: esperado ${correct.macDestino}, obtenido ${student.macDestino}`);
+            if (student.tipoPaquete !== correct.tipoPaquete) issues.push(`Tipo: esperado "${correct.tipoPaquete}", obtenido "${student.tipoPaquete}"`);
+            if (student.ipOrigen !== correct.ipOrigen) issues.push(`IP Origen: esperado ${correct.ipOrigen}, obtenido ${student.ipOrigen}`);
+            if (student.ipDestino !== correct.ipDestino) issues.push(`IP Destino: esperado ${correct.ipDestino}, obtenido ${student.ipDestino}`);
+            return issues.join(' | ') || 'Incongruencia en la fila';
+        }
+
+        function displayFeedback(feedback, correctCount, totalCount) {
+            const feedbackSection = document.getElementById('feedbackSection');
+            const feedbackContent = document.getElementById('feedbackContent');
+            let html = '<div>';
+
+            feedback.forEach(item => {
+                html += `
+                    <div class="feedback-item ${item.isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="feedback-row">Fila ${item.row}: ${item.isCorrect ? '✓ Correcta' : '✗ Incorrecta'}</div>
+                        <div class="feedback-explanation">${item.explanation}</div>
+                    </div>
+                `;
+            });
+
+            const score = totalCount > 0 ? ((correctCount / totalCount) * 100).toFixed(0) : 0;
+            html += `
+                <div class="score">Puntuación: ${score}% (${correctCount}/${totalCount} filas correctas)</div>
+            </div>`;
+
+            feedbackContent.innerHTML = html;
+            feedbackSection.classList.remove('hidden');
+            feedbackSection.scrollIntoView({ behavior: 'smooth' });
+            const state = getProgressState();
+            saveProgress({
+                bestScore: Math.max(state.bestScore, Number(score) || 0),
+                lastStage: currentLearningStage,
+                lastScenario: document.getElementById('scenarioSelector') ? document.getElementById('scenarioSelector').value : state.lastScenario
+            });
+        }
+
+        function resetExercise() {
+            document.querySelectorAll('select').forEach(select => {
+                select.value = '';
+                select.classList.remove('correct', 'incorrect');
+            });
+            const feedbackSection = document.getElementById('feedbackSection');
+            if (feedbackSection) {
+                feedbackSection.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "package.json", "use": "@vercel/next" }
+  ],
+  "routes": [
+    { "src": "/arp", "dest": "/arp" },
+    { "src": "/arp-dns", "dest": "/arp-dns" },
+    { "src": "/dhcp", "dest": "/dhcp" },
+    { "src": "/full", "dest": "/full" }
+  ]
+}
