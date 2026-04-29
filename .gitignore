@@ -4,4 +4,3 @@ node_modules/
 .env
 .DS_Store
 progress.json
-/public/networking_exercise.html

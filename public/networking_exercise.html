@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio Interactivo de Redes TCP/IP - Escenarios</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background: #f7f9fc; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+        h1 { color: #2f6fdb }
+        ul { margin-left: 18px }
+        .scenario { padding: 10px 12px; border: 1px solid #eef3ff; border-radius: 6px; margin-bottom: 8px; }
+        .meta { color: #666; font-size: 0.95em }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 Escenarios disponibles</h1>
+    <p>Esta página obtiene la lista de escenarios desde <code>/api/scenarios</code> para que el contenido sea centralizado y coherente con la API.</p>
+    <p><strong>Nota:</strong> Todos los escenarios importados están marcados como <em>non-persistent HTTP</em> (<code>httpPersistent: false</code>), tal como pediste.</p>
+
+    <div id="scenariosList">Cargando escenarios…</div>
+
+    <hr />
+    <p>Puedes abrir la herramienta interactiva completa (si la necesitas) desde la portada o desde el root del proyecto.</p>
+    <p><a href="/">Volver a la portada</a> · <a href="/arp">Practicar ARP</a> · <a href="/arp-dns">ARP + DNS</a> · <a href="/dhcp">DHCP</a> · <a href="/full">Flujo completo</a></p>
+  </div>
+
+  <script>
+    async function loadScenarios() {
+      const container = document.getElementById('scenariosList');
+      try {
+        const res = await fetch('/api/scenarios');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const scenarios = await res.json();
+        if (!Array.isArray(scenarios) || scenarios.length === 0) {
+          container.innerHTML = '<div>No hay escenarios disponibles.</div>';
+          return;
+        }
+
+        const list = document.createElement('div');
+        scenarios.forEach((s, idx) => {
+          const block = document.createElement('div');
+          block.className = 'scenario';
+          block.innerHTML = `<strong>${idx + 1}. ${s.name}</strong><div class="meta">IP PC1: ${s.pc1Ip} · DNS: ${s.dnsServerIp} · Web: ${s.webServerIp} · httpPersistent: ${s.httpPersistent === true}</div><div style="margin-top:6px">${s.description || ''}</div>`;
+          list.appendChild(block);
+        });
+        container.innerHTML = '';
+        container.appendChild(list);
+      } catch (e) {
+        container.innerHTML = '<div>Error cargando escenarios desde /api/scenarios — comprueba la API.</div>';
+        console.error(e);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadScenarios);
+  </script>
+</body>
+</html>
