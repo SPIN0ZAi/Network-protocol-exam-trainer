@@ -299,26 +299,34 @@ export default function ExercisePage() {
 
       <style jsx>{`
         .exercise-root { padding: 32px; max-width: 1200px; margin: 0 auto; }
-        .header h1 { margin: 0 }
-        .lead { margin-top: 6px; color: #666 }
-        .controls { margin: 18px 0 }
-        select { padding: 8px; border-radius: 6px; border: 1px solid #ddd }
+        .header { display:flex; align-items:baseline; justify-content:space-between; gap:12px }
+        .header h1 { margin: 0; font-size:20px }
+        .lead { margin-top: 6px; color: var(--muted) }
+        .controls { margin: 18px 0; display:flex; gap:12px; align-items:center }
+        select { padding: 8px; border-radius: 8px; border: 1px solid #e6edf3 }
         .grid { display: grid; grid-template-columns: 1fr 520px; gap: 18px }
         .card { background: white; padding: 14px; border-radius: 10px; box-shadow: 0 8px 20px rgba(16,24,40,0.04) }
         .ref td { padding: 6px 8px }
         .table-wrap { overflow: auto; max-height: 420px }
         table.exercise-table { width: 100%; border-collapse: collapse }
-        table.exercise-table th { text-align: left; padding: 10px; background: #f1f5f9 }
+        table.exercise-table th { text-align: left; padding: 10px; background: #f8fafc }
         table.exercise-table td { padding: 8px; border-bottom: 1px solid #f3f4f6 }
         .actions { display: flex; gap: 10px; margin-top: 12px }
-        .btn { padding: 10px 12px; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer }
-        .btn.primary { background: linear-gradient(90deg,#3559c7,#2f6fdb); color: #fff; border: none }
+        .btn { padding: 10px 12px; border-radius: 8px; border: 1px solid #e6edf3; background: white; cursor: pointer }
+        .btn.primary { background: var(--accent); color: #fff; border: none }
         .feedback .fb-item { padding: 8px; border-radius: 8px; margin-bottom: 8px }
         .feedback .fb-item.ok { background: #ebf9f0; border: 1px solid #c7f0d0 }
         .feedback .fb-item.bad { background: #fff5f5; border: 1px solid #ffd6d6 }
         .ex { margin-top: 6px; color: #444; font-size: 0.95em }
-        .empty { padding: 40px; text-align: center; color: #666 }
-        @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } }
+        .empty { padding: 40px; text-align: center; color: var(--muted) }
+
+        /* Sidebar specifics */
+        .sidebar{ display:flex; flex-direction:column; justify-content:space-between }
+        .profile{ display:flex; gap:10px; align-items:center }
+        .avatar{ width:40px; height:40px; border-radius:10px; background:linear-gradient(90deg,#3559c7,#2f6fdb); color:#fff; display:flex; align-items:center; justify-content:center }
+        .summary-card{ background:linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6)); padding:10px 12px; border-radius:10px; box-shadow:var(--shadow-1); display:flex; gap:12px; align-items:center }
+
+        @media (max-width: 980px) { .grid { grid-template-columns: 1fr; } .summary-card{ flex-direction:column; align-items:flex-start } }
       `}</style>
     </div>
   )

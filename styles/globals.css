@@ -12,3 +12,40 @@ html, body {
 a {
   color: #2f6fdb;
 }
+
+:root{
+  --bg-0: #f6f9fc;
+  --panel: #ffffff;
+  --muted: #6b7280;
+  --brand-1: #3559c7;
+  --brand-2: #2f6fdb;
+  --accent: linear-gradient(90deg,var(--brand-1),var(--brand-2));
+  --glass: rgba(255,255,255,0.6);
+  --shadow-1: 0 8px 24px rgba(16,24,40,0.06);
+}
+
+body{
+  background: radial-gradient(1200px 400px at 10% 10%, rgba(47,111,219,0.04), transparent 8%), radial-gradient(900px 300px at 90% 90%, rgba(53,89,199,0.03), transparent 8%), var(--bg-0);
+  color: #111827;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.container{ max-width:1200px; margin:0 auto; padding:28px }
+
+/* Sidebar + layout helpers */
+.sidebar{ width:220px; position:fixed; left:0; top:0; bottom:0; padding:20px; background: linear-gradient(180deg, rgba(53,89,199,0.06), rgba(47,111,219,0.03)); border-right:1px solid rgba(15,23,42,0.04) }
+.exercise-root{ margin-left:240px }
+.brand{ font-weight:700; color:var(--brand-1); font-size:20px }
+.brand span{ color:var(--brand-2) }
+nav a{ display:block; padding:8px 10px; border-radius:8px; color:var(--muted); text-decoration:none; margin:6px 0 }
+nav a.active, nav a:hover{ background: rgba(47,111,219,0.08); color:var(--brand-1) }
+
+/* Buttons & inputs */
+button, .btn{ font-weight:600 }
+select, input{ padding:8px 10px; border-radius:8px; border:1px solid #e6edf3; background: #fff }
+
+/* Cards */
+.card{ background:var(--panel); border-radius:12px; box-shadow:var(--shadow-1); padding:16px }
+
+@media (max-width:980px){ .sidebar{ position:relative; width:100%; height:auto; border-right:none } .exercise-root{ margin-left:0; padding-top:12px } }
