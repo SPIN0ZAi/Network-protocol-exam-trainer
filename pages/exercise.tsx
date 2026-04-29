@@ -12,12 +12,23 @@ export default function ExercisePage() {
   const [currentLearning, setCurrentLearning] = useState<'learn'|'quiz'|'exercise'>('exercise')
   const [quizAnswer, setQuizAnswer] = useState<number | null>(null)
   const [quizResult, setQuizResult] = useState<boolean | null>(null)
+  const [bestScore, setBestScore] = useState<number>(0)
 
   useEffect(() => {
     fetch('/api/scenarios')
       .then(r => r.json())
       .then(data => setScenarios(data))
       .catch(() => setScenarios([]))
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    try {
+      const prev = JSON.parse(localStorage.getItem('networkingExerciseProgressV1') || '{}') || {}
+      setBestScore(prev.bestScore || 0)
+    } catch (e) {
+      setBestScore(0)
+    }
   }, [])
 
   useEffect(() => {
@@ -148,7 +159,7 @@ export default function ExercisePage() {
           </div>
           <div className="summary-card">
             <div>Escenarios: <strong>{scenarios.length}</strong></div>
-            <div>Mejor nota: <strong>{(JSON.parse(localStorage.getItem('networkingExerciseProgressV1')||'{}').bestScore)||0}%</strong></div>
+            <div>Mejor nota: <strong>{bestScore || 0}%</strong></div>
           </div>
         </div>
 
