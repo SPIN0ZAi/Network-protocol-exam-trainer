@@ -328,7 +328,7 @@ export default function ExercisePage() {
             </section>
           </div>
         </div>
-      ) : (
+      )) : (
         <div className="empty">Selecciona un escenario para comenzar.</div>
       )}
 
