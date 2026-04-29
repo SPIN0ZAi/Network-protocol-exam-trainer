@@ -109,6 +109,7 @@ export default function ExercisePage() {
     const prev = JSON.parse(localStorage.getItem('networkingExerciseProgressV1') || '{}') || {}
     const next = { ...(prev || {}), quizzesSolved: (prev.quizzesSolved || 0) + 1, bestScore: isCorrect ? Math.max(prev.bestScore || 0, 100) : (prev.bestScore || 0) }
     localStorage.setItem('networkingExerciseProgressV1', JSON.stringify(next))
+    setBestScore(next.bestScore || 0)
     // try server sync
     fetch('/api/progress', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) }).catch(()=>{})
   }
@@ -164,6 +165,42 @@ export default function ExercisePage() {
         </div>
 
         {currentScenario ? (
+        currentLearning === 'quiz' ? (
+          <div className="grid">
+            <div className="left">
+              <section className="card">
+                <h3>ARP Mini-Quiz</h3>
+                <p>Selecciona la dirección MAC de la puerta de enlace (Gateway) en este escenario.</p>
+                <div className="quiz-opts">
+                  {(() => {
+                    const opts = [currentScenario.pc1Mac, currentScenario.gatewayMac, currentScenario.webServerMac]
+                    return opts.map((o, idx) => (
+                      <label key={o} style={{display:'block', margin:'8px 0'}}>
+                        <input type="radio" name="arpQuiz" checked={quizAnswer===idx} onChange={() => setQuizAnswer(idx)} /> {o}
+                      </label>
+                    ))
+                  })()}
+                </div>
+                <div style={{marginTop:12}}>
+                  <button className="btn primary" onClick={checkArp}>Comprobar</button>
+                  <button className="btn" style={{marginLeft:8}} onClick={() => { setQuizAnswer(null); setQuizResult(null) }}>Reintentar</button>
+                </div>
+                {quizResult !== null && (
+                  <div style={{marginTop:12}} className={quizResult ? 'fb-item ok' : 'fb-item bad'}>
+                    {quizResult ? '✓ ¡Correcto! Se ha guardado tu progreso.' : '✗ Incorrecto — repasa la topología y vuelve a intentarlo.'}
+                  </div>
+                )}
+              </section>
+            </div>
+            <div className="right">
+              <section className="card">
+                <h3>Información</h3>
+                <p>PC1: {currentScenario.pc1Ip} — {currentScenario.pc1Mac}</p>
+                <p>Gateway: {currentScenario.gatewayIp} — {currentScenario.gatewayMac}</p>
+              </section>
+            </div>
+          </div>
+        ) : (
         <div className="grid">
           <div className="left">
             <section className="card">
