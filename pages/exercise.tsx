@@ -9,6 +9,9 @@ export default function ExercisePage() {
   const [currentScenario, setCurrentScenario] = useState<Scenario | null>(null)
   const [studentAnswers, setStudentAnswers] = useState<any[]>([])
   const [feedback, setFeedback] = useState<any[]>([])
+  const [currentLearning, setCurrentLearning] = useState<'learn'|'quiz'|'exercise'>('exercise')
+  const [quizAnswer, setQuizAnswer] = useState<number | null>(null)
+  const [quizResult, setQuizResult] = useState<boolean | null>(null)
 
   useEffect(() => {
     fetch('/api/scenarios')
@@ -89,8 +92,35 @@ export default function ExercisePage() {
     localStorage.setItem('networkingExerciseProgressV1', JSON.stringify({ ...(prev || {}), bestScore: Math.max(prev?.bestScore || 0, score) }))
   }
 
+  function checkArp() {
+    const isCorrect = quizAnswer === 1
+    setQuizResult(isCorrect)
+    const prev = JSON.parse(localStorage.getItem('networkingExerciseProgressV1') || '{}') || {}
+    const next = { ...(prev || {}), quizzesSolved: (prev.quizzesSolved || 0) + 1, bestScore: isCorrect ? Math.max(prev.bestScore || 0, 100) : (prev.bestScore || 0) }
+    localStorage.setItem('networkingExerciseProgressV1', JSON.stringify(next))
+    // try server sync
+    fetch('/api/progress', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) }).catch(()=>{})
+  }
+
   return (
     <div className="exercise-root">
+      <aside className="sidebar">
+        <div className="brand">Network<span>Lab</span></div>
+        <nav>
+          <a className="active">Dashboard</a>
+          <a href="/exercise">Practice</a>
+          <a href="/arp">ARP lane</a>
+          <a href="/arp-dns">ARP + DNS</a>
+          <a href="/full">Full flow</a>
+        </nav>
+        <div className="profile">
+          <div className="avatar">SS</div>
+          <div className="who">
+            <div className="name">Student</div>
+            <div className="role">Learner</div>
+          </div>
+        </div>
+      </aside>
       <Head>
         <title>Networking Exercise — Interactive</title>
       </Head>
@@ -109,7 +139,20 @@ export default function ExercisePage() {
         </select>
       </div>
 
-      {currentScenario ? (
+      <main className="content">
+        <div className="top-row">
+          <div className="tabs">
+            <button className={currentLearning === 'learn' ? 'active' : ''} onClick={() => setCurrentLearning('learn')}>Learning</button>
+            <button className={currentLearning === 'quiz' ? 'active' : ''} onClick={() => setCurrentLearning('quiz')}>ARP Quiz</button>
+            <button className={currentLearning === 'exercise' ? 'active' : ''} onClick={() => setCurrentLearning('exercise')}>Exercise</button>
+          </div>
+          <div className="summary-card">
+            <div>Escenarios: <strong>{scenarios.length}</strong></div>
+            <div>Mejor nota: <strong>{(JSON.parse(localStorage.getItem('networkingExerciseProgressV1')||'{}').bestScore)||0}%</strong></div>
+          </div>
+        </div>
+
+        {currentScenario ? (
         <div className="grid">
           <div className="left">
             <section className="card">
@@ -195,7 +238,7 @@ export default function ExercisePage() {
                         <td>
                           <select value={(studentAnswers[i] && studentAnswers[i].tipoPaquete) || ''} onChange={e => handleSelectChange(i, 'tipoPaquete', e.target.value)}>
                             <option value="">-</option>
-                            {packetTypes.map(p => <option key={p} value={p}>{p}</option>)}
+                            {packetTypes.map(p => <option key={String(p)} value={String(p)}>{String(p)}</option>)}
                           </select>
                         </td>
                         <td>
@@ -240,6 +283,8 @@ export default function ExercisePage() {
       ) : (
         <div className="empty">Selecciona un escenario para comenzar.</div>
       )}
+
+      </main>
 
       <style jsx>{`
         .exercise-root { padding: 32px; max-width: 1200px; margin: 0 auto; }
